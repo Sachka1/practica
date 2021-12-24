@@ -16,8 +16,8 @@ def save(name='', fmt='png'):
     plt.savefig('{}'.format(name))
     os.chdir(pwd)
 
-N = 1056
-eps = 0.0001
+
+eps = 0.001
 
 x = []                                                  # облако точек
 y = []                                                  #
@@ -27,9 +27,9 @@ x_true1 = [37.461, 37.477, 37.493, 37.515, 37.54,
           37.649, 37.641, 37.631, 37.647, 37.657]       # Эталон значений по х
                                                         # 1 рельса
 
-x_true2 = [39.261, 39.277, 39.293, 39.315, 39.34,
-           39.396, 39.446, 39.447, 39.453, 39.455,
-           39.449, 39.441, 39.431, 39.447, 39.457]      # Эталон значений по х
+x_true2 = [39.233, 39.238, 39.247, 39.253, 39.255,
+           39.259, 39.275, 39.263, 39.249, 39.264,
+           39.237, 39.233, 39.225, 39.154, 39.229]      # Эталон значений по х
                                                         # 2 рельса
 
 y_true1 = [137.393, 137.396, 137.4, 137.405, 137.408,
@@ -37,9 +37,9 @@ y_true1 = [137.393, 137.396, 137.4, 137.405, 137.408,
           137.547, 137.562, 137.579, 137.593, 137.602]  # Эталон значений по у
                                                         # 1 рельса
 
-y_true2 = [137.463, 137.466, 137.47, 137.475, 137.478,
-           137.496, 137.521, 137.547, 137.571, 137.591,
-           137.617, 137.632, 137.649, 137.663, 137.672] # Эталон значений по у
+y_true2 = [137.616, 137.614, 137.49, 137.599, 137.589,
+           137.581, 137.518, 137.56, 137.644, 137.641,
+           137.637, 137.64, 137.633, 137.464, 137.628] # Эталон значений по у
                                                         # 2 рельса
 
 x_new = []                                              # Распознанный рельсы
@@ -51,36 +51,20 @@ with open("dat.txt", "r") as file:
         y.append(float(line.split(" ")[1]))
 s = [1 for _ in range(len(x))]
 
-for i in range(N):
+for i in range(len(x)):
     for j in range(len(x_true1)):
-        if ((x[i] - x_true1[j])*(x[i] - x_true1[j]) < eps):
+        if ((x[i] - x_true1[j])**2 < eps) and ((y[i] - y_true1[j])**2 < eps):
             x_new.append(x[i])
-        if ((x[i] - x_true2[j])*(x[i] - x_true2[j]) < eps):
+            y_new.append(y[i])
+        if ((x[i] - x_true2[j])**2 < eps) and ((y[i] - y_true2[j])**2 < eps):
             x_new.append(x[i])
-        if ((y[i] - y_true1[j]) * (y[i] - y_true1[j]) < eps):
             y_new.append(y[i])
-        if ((y[i] - y_true2[j]) * (y[i] - y_true2[j]) < eps):
-            y_new.append(y[i])
+s1 = [1 for _ in range(len(x_new))]
 
-len_min = 10056
-l = 10056
 
-if (len(x_new) > len(y_new)):
-    l = len(x_new)
-    len_min = len(y_new)
-    for i in range(len_min, l):
-        x_new.pop(i)
-
-if (len(x_new) < len(y_new)):
-    l = len(y_new)
-    len_min = len(x_new)
-    for i in range(len_min, l):
-        y_new.pop(i)
-
-plt.plot(x_new, y_new, c='red')
-plt.show()
 
 plt.scatter(x, y, s=s)
+plt.scatter(x_new, y_new, s=s1)
 plt.grid(True)
 plt.savefig("result.png", format="png")
 plt.show()
