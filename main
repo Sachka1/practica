@@ -1,0 +1,71 @@
+import os
+import sys
+
+import cv2
+import numpy as np
+import cv2 as cv
+from matplotlib import pyplot as plt
+
+
+def save(name='', fmt='png'):
+    pwd = os.getcwd()
+    iPath = "./"
+    if not os.path.exists(iPath):
+        os.mkdir(iPath)
+    os.chdir(iPath)
+    plt.savefig('{}'.format(name))
+    os.chdir(pwd)
+
+N = 1056
+eps = 0.0001
+
+x = []                                                  # облако точек
+y = []                                                  #
+
+x_true1 = [37.461, 37.477, 37.493, 37.515, 37.54,
+          37.596, 37.646, 37.647, 37.653, 37.655,
+          37.649, 37.641, 37.631, 37.647, 37.657]       # Эталон значений по х
+                                                        # 1 рельса
+
+x_true2 = [39.261, 39.277, 39.293, 39.315, 39.34,
+           39.396, 39.446, 39.447, 39.453, 39.455,
+           39.449, 39.441, 39.431, 39.447, 39.457]      # Эталон значений по х
+                                                        # 2 рельса
+
+y_true1 = [137.393, 137.396, 137.4, 137.405, 137.408,
+          137.426, 137.451, 137.477, 137.501, 137.521,
+          137.547, 137.562, 137.579, 137.593, 137.602]  # Эталон значений по у
+                                                        # 1 рельса
+
+y_true2 = [137.463, 137.466, 137.47, 137.475, 137.478,
+           137.496, 137.521, 137.547, 137.571, 137.591,
+           137.617, 137.632, 137.649, 137.663, 137.672] # Эталон значений по у
+                                                        # 2 рельса
+
+x_new = []                                              # Распознанный рельсы
+y_new = []                                              #
+
+with open("dat.txt", "r") as file:
+    for line in file:
+        x.append(float(line.split(" ")[0]))
+        y.append(float(line.split(" ")[1]))
+s = [1 for _ in range(len(x))]
+
+for i in range(1000):
+    for j in range(0, 14):
+        if ((x[i] - x_true1[j])*(x[i] - x_true1[j]) < eps):
+            x_new[i] = x[i]
+        if ((x[i] - x_true2[j])*(x[i] - x_true2[j]) < eps):
+            x_new[i] = x[i]
+        if ((y[i] - y_true1[j]) * (y[i] - y_true1[j]) < eps):
+            y_new[i] = y[i]
+        if ((y[i] - y_true2[j]) * (y[i] - y_true2[j]) < eps):
+            y_new[i] = y[i]
+
+plt.plot(x_new, y_new, c='red')
+plt.show()
+
+plt.scatter(x, y, s=s)
+plt.grid(True)
+plt.savefig("result.png", format="png")
+plt.show()
