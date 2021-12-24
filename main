@@ -51,16 +51,31 @@ with open("dat.txt", "r") as file:
         y.append(float(line.split(" ")[1]))
 s = [1 for _ in range(len(x))]
 
-for i in range(1000):
-    for j in range(0, 14):
+for i in range(N):
+    for j in range(len(x_true1)):
         if ((x[i] - x_true1[j])*(x[i] - x_true1[j]) < eps):
-            x_new[i] = x[i]
+            x_new.append(x[i])
         if ((x[i] - x_true2[j])*(x[i] - x_true2[j]) < eps):
-            x_new[i] = x[i]
+            x_new.append(x[i])
         if ((y[i] - y_true1[j]) * (y[i] - y_true1[j]) < eps):
-            y_new[i] = y[i]
+            y_new.append(y[i])
         if ((y[i] - y_true2[j]) * (y[i] - y_true2[j]) < eps):
-            y_new[i] = y[i]
+            y_new.append(y[i])
+
+len_min = 10056
+l = 10056
+
+if (len(x_new) > len(y_new)):
+    l = len(x_new)
+    len_min = len(y_new)
+    for i in range(len_min, l):
+        x_new.pop(i)
+
+if (len(x_new) < len(y_new)):
+    l = len(y_new)
+    len_min = len(x_new)
+    for i in range(len_min, l):
+        y_new.pop(i)
 
 plt.plot(x_new, y_new, c='red')
 plt.show()
